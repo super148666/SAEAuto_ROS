@@ -12,22 +12,24 @@
 
 #include "Control.h"
 
-#include<gflags/gflags.h>
-#include<glog/logging.h>
+#include <gflags/gflags.h>
+#include <glog/logging.h>
 #include <curses.h>
+#include <sys/time.h>
+#include <stdio.h>
 
 #include "CarNetwork.h"
 #include "SafetySerialOut.h"
 #include "HeartBeatSerialIn.h"
 #include "IPC.h"
 
-
+/*
 static timestamp_t get_timestamp() {
   struct timeval now;
   gettimeofday(&now, NULL);
   return now.tv_usec + (timestamp_t)now.tv_sec * 1000000;
 }
-
+*/
 
 Control *SAECar;
 

@@ -13,7 +13,6 @@
 #include "TripStateMonitor.h"
 #include "Control.h"
 #include "Controller.h"
-#include "GPSConnection.h"
 
 class Logger;
 

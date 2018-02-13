@@ -1,22 +1,41 @@
-cmake_minimum_required(VERSION 3.8)
-project(control)
+cmake_minimum_required(VERSION 2.8)
+project(rossae)
 
 set(CMAKE_CXX_STANDARD 11)
 
-find_package(Boost 1.58 REQUIRED COMPONENTS
-        system
-        thread
-        )
+# catkin
+find_package(catkin REQUIRED COMPONENTS
+        message_generation
+        roscpp
+        nav_msgs
+        geometry_msgs
+        sensor_msgs
+        tf
+        dynamic_reconfigure)
+        
+# message
+add_message_files(
+        FILES)
 
-find_package( Curses REQUIRED )
+# service
+add_service_files(
+		FILES)
+
+set(Boost_LIBRARY_DIR "/usr/lib/aarch64-linux-gnu")
+set(BOOST_INCLUDEDIR "/usr/include/boost")
+
+find_package(Boost REQUIRED COMPONENTS
+        system
+        thread)
+
+find_package(Curses REQUIRED)
 
 
 include_directories(
         include/
         src/
         ${CURSES_INCLUDE_DIRS}
-        ${BOOST_INCLUDE_DIRS}
-)
+        ${BOOST_INCLUDE_DIRS})
 
 set(SOURCE_FILES
         src/AsyncSerial.cpp
@@ -32,6 +51,23 @@ set(SOURCE_FILES
         src/TripStateMonitor.cpp
         src/PID.cpp)
 
-add_executable(control ${SOURCE_FILES})
+add_executable(RosSAE ${SOURCE_FILES})
 
-target_link_libraries(control Boost::system Boost::thread ${CURSES_LIBRARIES} gflags glog)
+target_link_libraries(RosSAE boost_system boost_thread ${CURSES_LIBRARIES} gflags glog pthread)
+#set_target_properties(RosSAE PROPERTIES COMPILE_FLAGS "-fPIC")
+#set_target_properties(RosSAE PROPERTIES COMPILE_FLAGS "-Wl")
+
+
+#generate_messages(
+#		DEPENDENCIES)
+
+catkin_package(
+		DEPENDS
+		roscpp)
+
+install(
+		TARGETS
+		RosSAE
+		ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
