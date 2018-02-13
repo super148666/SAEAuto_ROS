@@ -1,0 +1,82 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Roman C. Podolski <mailto:roman.podolski@tum.de>
+
+def build(bld):
+    """TODO: Docstring for build.
+    :bld: TODO
+    :returns: TODO
+    """
+    bld.recurse('piksi matlab xsens')
+
+    bld(features='cpplint', source=bld.path.ant_glob('*.hpp'))
+    bld(features='cpplint', source=bld.path.ant_glob('*.h'))
+
+
+    bld.objects(
+            features = 'cpplint',
+            source = [     #TODO: Split this up in a better way
+                'Logger.cpp',
+                'AsyncSerial.cpp',
+                'SafetySerialOut.cpp',
+                'LowLevelSerialOut.cpp',
+                'GPSConnection.cpp',
+                'lidar/ibeo.cpp',
+                'lidar/ibeo_network.cpp',
+                'IPC.cpp',
+                'PID.cpp',
+                'Xsens.cpp',
+                'Fusion.cpp',
+                'BoeingKalman.cpp',
+				'HeartBeatSerialIn.cpp'
+				'lidar/road_edge_detector.cpp'
+                ],
+            includes = ['../include'],
+            target='myobjects',
+            cflags   = ['-Wall', '-g'],
+            cxxflags   = ['-Wall', '-Wuninitialized', '-ggdb', '-g', '-std=c++0x']
+           )
+
+    bld.objects(
+            features = 'cpplint',
+            source = [     #TODO: Split this up in a better way
+                'Piksi_Read.c',
+                'CarNetwork.cpp'],
+            includes = ['../include'],
+            target='mycobjects',
+            cflags   = ['-Wall', '-g'],
+           )
+
+    bld.program(
+            source   = 'Control.cpp',
+            target   = 'Control',
+
+            # includes = ['..','.'],
+            includes = ['../include'],
+            defines  = [],
+
+            lib      = [
+                'ncurses',
+                'boost_thread',
+                'pthread',
+                'm',
+                'gps',
+                'boost_system',
+                'rt'
+                ],
+            libpath  = ['.', '/usr/lib'],
+
+            vnum     = '0.0.1',
+
+            #cflags   = ['-Wall', '-Wuninitialized', '-ggdb', '-g'],
+
+            use      = [
+                'OPENCV',
+                'matlab',
+                'piksi',
+                'cmt',
+                'myobjects', 'mycobjects' ],
+            cflags   = ['-Wall', '-g'],
+            cxxflags   = ['-Wall', '-Wuninitialized', '-ggdb', '-g', '-std=c++0x']
+            )
+    bld(rule='cp ${SRC} ${TGT}', source = './Control', target = '../../Control')
