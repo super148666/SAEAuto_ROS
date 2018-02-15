@@ -15,8 +15,6 @@
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 #include <curses.h>
-#include <sys/time.h>
-#include <stdio.h>
 
 #include "CarNetwork.h"
 #include "SafetySerialOut.h"
@@ -446,21 +444,22 @@ int main(int argc, char *argv[]) {
       exit(1);
       
   }
-
-  try {
-    SAECar->Run(); // Execution happens in this function.
-  } catch (const std::exception& e){
-      if (SAECar != NULL && SAECar->Log->IsOpen()){
-        SAECar->Log->WriteLogLine("Control - Unhandled exception occurred running control.\n");
-        SAECar->Log->WriteLogLine(e.what());
-        SAECar->Log->WriteLogLine("\nExiting\n");
-        SAECar->Log->CloseLog();
-        SAECar->WriteInfoFile();
-      } else {
-        std::cout << "Control - Unhandled exception occurred running control\n" << e.what() << "\nExiting\n";
-      }
-      exit(1);
-  }
+    while(1) {
+        try {
+            SAECar->Run(); // Execution happens in this function.
+        } catch (const std::exception &e) {
+            if (SAECar != NULL && SAECar->Log->IsOpen()) {
+                SAECar->Log->WriteLogLine("Control - Unhandled exception occurred running control.\n");
+                SAECar->Log->WriteLogLine(e.what());
+                SAECar->Log->WriteLogLine("\nExiting\n");
+                SAECar->Log->CloseLog();
+                SAECar->WriteInfoFile();
+            } else {
+                std::cout << "Control - Unhandled exception occurred running control\n" << e.what() << "\nExiting\n";
+            }
+            exit(1);
+        }
+    }
   std::cout << "Close.\n";
 
   echo();
