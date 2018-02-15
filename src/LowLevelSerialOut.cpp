@@ -14,13 +14,14 @@
 #include <cmath>
 #include <string>
 
+#include "ros/ros.h"
 #include "AsyncSerial.h"
 #include <stdlib.h>
 
 #include "LowLevelSerialOut.h"
 #include "Logger.h"
 #include "Controller.h"
-//#include "Control.h"
+
 using std::exception;
 using std::cerr;
 using std::endl;

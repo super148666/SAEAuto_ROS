@@ -49,6 +49,7 @@ class Controller : public TripStateObs {
 	static double TimeStamp();
 
 	LowLevelSerialOut* LowLevelSerial;
+	
     private:
 
 	double DesiredSpeed;

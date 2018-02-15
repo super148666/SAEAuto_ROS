@@ -6,16 +6,15 @@ set(CMAKE_CXX_STANDARD 11)
 # catkin
 find_package(catkin REQUIRED COMPONENTS
         message_generation
+        std_msgs
         roscpp
-        nav_msgs
-        geometry_msgs
-        sensor_msgs
         tf
         dynamic_reconfigure)
         
 # message
 add_message_files(
-        FILES)
+        FILES
+        Command.msg)
 
 # service
 add_service_files(
@@ -35,7 +34,8 @@ include_directories(
         include/
         src/
         ${CURSES_INCLUDE_DIRS}
-        ${BOOST_INCLUDE_DIRS})
+        ${BOOST_INCLUDE_DIRS}
+        ${catkin_INCLUDE_DIRS})
 
 set(SOURCE_FILES
         src/AsyncSerial.cpp
@@ -53,17 +53,19 @@ set(SOURCE_FILES
 
 add_executable(RosSAE ${SOURCE_FILES})
 
-target_link_libraries(RosSAE boost_system boost_thread ${CURSES_LIBRARIES} gflags glog pthread)
+target_link_libraries(RosSAE ${catkin_LIBRARIES} boost_system boost_thread ${CURSES_LIBRARIES} gflags glog pthread)
 #set_target_properties(RosSAE PROPERTIES COMPILE_FLAGS "-fPIC")
 #set_target_properties(RosSAE PROPERTIES COMPILE_FLAGS "-Wl")
 
 
-#generate_messages(
-#		DEPENDENCIES)
+generate_messages(
+		DEPENDENCIES
+		std_msgs)
 
 catkin_package(
 		DEPENDS
-		roscpp)
+		roscpp
+		message_runtime)
 
 install(
 		TARGETS

@@ -21,6 +21,8 @@
 #include "HeartBeatSerialIn.h"
 #include "IPC.h"
 
+#include "ros/ros.h"
+#include "rossae/Command.h"
 /*
 static timestamp_t get_timestamp() {
   struct timeval now;
@@ -383,7 +385,13 @@ void HandleSeg(int param) {
 
 void HandleExit(int param) { SAECar->Quit(); }
 
-
+void commandMessageReceived(const rossae::Command &msg)
+{
+	SAECar->Ctrl->CurrentSteeringSetPosn = msg.steer;
+	if(msg.brake == 0) SAECar->Ctrl->CurrentThrottleBrakeSetPosn = msg.accel;
+	else SAECar->Ctrl->CurrentThrottleBrakeSetPosn = -1*msg.brake;
+	
+}
 
 /*
 * Entry point to the program.
@@ -391,6 +399,11 @@ void HandleExit(int param) { SAECar->Quit(); }
 * Default folder name is '0'.
 */
 int main(int argc, char *argv[]) {
+  ros::init(argc, argv, "Control");
+  ros::NodeHandle nh;
+  ros::Subscriber cmd_sub;
+  cmd_sub = nh.subscribe("RosSAE/command", 1000, &commandMessageReceived);
+  
   std::string LogDir;
 
   bool ExtLogging = false;
